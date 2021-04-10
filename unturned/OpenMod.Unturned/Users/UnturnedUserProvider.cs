@@ -1,4 +1,4 @@
-﻿using Cysharp.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using OpenMod.API;
 using OpenMod.API.Eventing;
 using OpenMod.API.Prioritization;
@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SteamGameServerNetworkingUtils = SDG.Unturned.SteamGameServerNetworkingUtils;
 
 namespace OpenMod.Unturned.Users
 {
@@ -339,6 +340,77 @@ namespace OpenMod.Unturned.Users
             }
 
             return BroadcastTask().AsTask();
+        }
+
+        public Task<bool> BanAsync(IUser user, string? reason = null, DateTime? endTime = null)
+        {
+            if (user is not UnturnedUser player)
+            {
+                return Task.FromResult(result: false);
+            }
+
+            reason ??= "No reason provided";
+            endTime ??= DateTime.MaxValue;
+
+            var banDuration = (uint)(endTime.Value - DateTime.Now).TotalSeconds;
+            if (banDuration <= 0)
+                return Task.FromResult(result: false);
+
+            async UniTask<bool> BanTask()
+            {
+                await UniTask.SwitchToMainThread();
+                var ip = player.Player.SteamPlayer.getIPv4AddressOrZero();
+                return Provider.requestBanPlayer(CSteamID.Nil, player.SteamId, ip, reason, banDuration);
+            }
+
+            return BanTask().AsTask();
+        }
+
+        public Task<bool> BanAsync(IUser user, IUser? instigator = null, string? reason = null, DateTime? endTime = null)
+        {
+            if (instigator == null || !ulong.TryParse(instigator.Id, out var instigatorId))
+            {
+                return BanAsync(user, reason, endTime);
+            }
+
+            if (user is not UnturnedUser player)
+            {
+                return Task.FromResult(result: false);
+            }
+
+            reason ??= "No reason provided";
+            endTime ??= DateTime.MaxValue;
+
+            var banDuration = (uint) (endTime.Value - DateTime.Now).TotalSeconds;
+            if (banDuration <= 0)
+                return Task.FromResult(result: false);
+
+            async UniTask<bool> BanTask()
+            {
+                await UniTask.SwitchToMainThread();
+                var ip = player.Player.SteamPlayer.getIPv4AddressOrZero();
+                return Provider.requestBanPlayer(new CSteamID(instigatorId), player.SteamId, ip, reason, banDuration);
+            }
+
+            return BanTask().AsTask();
+        }
+
+        public Task<bool> KickAsync(IUser user, string? reason = null)
+        {
+            if (user is not UnturnedUser player)
+            {
+                return Task.FromResult(result: false);
+            }
+
+            reason ??= "No reason provided";
+            async UniTask<bool> KickTask()
+            {
+                await UniTask.SwitchToMainThread();
+                Provider.kick(player.SteamId, reason);
+                return true;
+            }
+
+            return KickTask().AsTask();
         }
 
         public ICollection<UnturnedUser> GetOnlineUsers()

@@ -36,16 +36,22 @@ namespace OpenMod.Unturned.Zombies.Events
         /// </summary>
         public EZombieStunOverride StunOverride { get; set; }
 
+        /// <summary>
+        /// Gets or sets the ELimb.
+        /// </summary>
+        public ELimb Limb { get; set; }
+
         public bool IsCancelled { get; set; }
 
         public UnturnedZombieDamagingEvent(UnturnedZombie zombie, UnturnedPlayer? user, ushort damageAmount,
-            Vector3 ragdoll, ERagdollEffect ragdollEffect, EZombieStunOverride stunOverride) : base(zombie)
+            Vector3 ragdoll, ERagdollEffect ragdollEffect, EZombieStunOverride stunOverride, ELimb limb) : base(zombie)
         {
             DamageAmount = damageAmount;
             Instigator = user;
             Ragdoll = ragdoll;
             RagdollEffect = ragdollEffect;
             StunOverride = stunOverride;
+            Limb = limb;
         }
     }
 }

@@ -147,6 +147,39 @@ namespace OpenMod.Core.Users
             await provider.BroadcastAsync(userType, message, color);
         }
 
+        public Task<bool> BanAsync(IUser user, IUser? instigator = null, string? reason = null, DateTime? endTime = null)
+        {
+            // ReSharper disable once ConvertIfStatementToReturnStatement
+            if (user.Provider == null)
+            {
+                return Task.FromResult(result: false);
+            }
+
+            return user.Provider.BanAsync(user, instigator, reason, endTime);
+        }
+
+        public Task<bool> BanAsync(IUser user, string? reason = null, DateTime? endTime = null)
+        {
+            // ReSharper disable once ConvertIfStatementToReturnStatement
+            if (user.Provider == null)
+            {
+                return Task.FromResult(result: false);
+            }
+
+            return user.Provider.BanAsync(user, reason, endTime);
+        }
+
+        public Task<bool> KickAsync(IUser user, string? reason = null)
+        {
+            // ReSharper disable once ConvertIfStatementToReturnStatement
+            if (user.Provider == null)
+            {
+                return Task.FromResult(result: false);
+            }
+
+            return user.Provider.KickAsync(user, reason);
+        }
+
         public virtual ValueTask DisposeAsync()
         {
             if (m_IsDisposing)

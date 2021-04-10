@@ -140,6 +140,7 @@ These events are stored within the `OpenMod.Unturned.Players.Movement.Events` na
 | UnturnedPlayerGestureUpdatedEvent | After a player's gesture updates | No              |
 | UnturnedPlayerStanceUpdatedEvent  | After a player's stance updates  | No              |
 | UnturnedPlayerTeleportingEvent    | Before a player teleports        | Yes             |
+| UnturnedPlayerSafetyUpdatedEvent  | After a player safezone updated  | No              |
 
 ### Skills
 These events are stored within the `OpenMod.Unturned.Players.Skills.Events` namespace.
@@ -147,6 +148,7 @@ These events are stored within the `OpenMod.Unturned.Players.Skills.Events` name
 | **Event**                            | **Fired when**                      | **Cancellable** |
 |--------------------------------------|-------------------------------------|-----------------|
 | UnturnedPlayerExperienceUpdatedEvent | After a player's experience updates | No              |
+| UnturnedPlayerReputationUpdatedEvent | After a player's reputation updates | No              |
 
 ### Stats
 These events are stored within the `OpenMod.Unturned.Players.Stats.Events` namespace.
@@ -180,3 +182,11 @@ These events are stored within the `OpenMod.Unturned.Players.UI.Events` namespac
 |----------------------------------|---------------------------------------------------|-----------------|
 | UnturnedPlayerButtonClickedEvent | After a player has clicked a UI button            | No              |
 | UnturnedPlayerTextInputtedEvent  | After a player has inputted a text into a textbox | No              |
+
+### Voice
+These events are stored within the `OpenMod.Unturned.Players.Voice.Events` namespace.
+
+| **Event**                         | **Fired when**                                    | **Cancellable** |
+|-----------------------------------|---------------------------------------------------|-----------------|
+| UnturnedPlayerTalkingUpdatedEvent | After a player has started or stoped talking      | No              |
+| UnturnedPlayerRelayingVoiceEvent  | Before a player has started talking               | Yes             |

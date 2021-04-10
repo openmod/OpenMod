@@ -80,12 +80,11 @@ namespace OpenMod.Unturned.Zombies.Events
 
             var @event = damageAmount >= zombie.Health
                 ? new UnturnedZombieDyingEvent(zombie, player, damageAmount, parameters.direction,
-                    parameters.ragdollEffect, parameters.zombieStunOverride)
+                    parameters.ragdollEffect, parameters.zombieStunOverride, parameters.limb)
                 : new UnturnedZombieDamagingEvent(zombie, player, damageAmount, parameters.direction,
-                    parameters.ragdollEffect, parameters.zombieStunOverride);
+                    parameters.ragdollEffect, parameters.zombieStunOverride, parameters.limb);
 
             @event.IsCancelled = !shouldAllow;
-
             Emit(@event);
 
             parameters.damage = @event.DamageAmount;
@@ -93,6 +92,7 @@ namespace OpenMod.Unturned.Zombies.Events
             parameters.ragdollEffect = @event.RagdollEffect;
             parameters.instigator = @event.Instigator?.Player;
             parameters.zombieStunOverride = @event.StunOverride;
+            parameters.limb = @event.Limb;
             shouldAllow = !@event.IsCancelled;
         }
 
