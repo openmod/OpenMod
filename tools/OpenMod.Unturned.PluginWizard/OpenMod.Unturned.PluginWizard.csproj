@@ -100,7 +100,14 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="OpenModIcon.ico" />
+    <Content Include="LICENSE.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="OpenModIcon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenMod.Unturned.PluginTemplate\OpenMod.Unturned.PluginTemplate.csproj">
