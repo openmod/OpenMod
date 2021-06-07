@@ -833,8 +833,14 @@ namespace OpenMod.NuGet
                     if (updateExisting)
                     {
                         var installedPackage = await GetLatestPackageIdentityAsync(package.Id);
-                        if (package.HasVersion && installedPackage?.Version != package.Version)
+
+                        // Re-install the package if:
+                        // The target package is latest (has no version)
+                        // or
+                        // The currently installed package's version is not equal to the target's package version
+                        if (!package.HasVersion || installedPackage?.Version == null || package.Version > installedPackage.Version)
                         {
+                            Logger.LogInformation($"Updating package: {package.Id}@{package.Version?.OriginalVersion ?? "latest"}");
                             await InstallAsync(package, allowPrereleaseVersions: true);
                         }
                     }

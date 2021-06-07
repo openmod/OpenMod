@@ -149,6 +149,12 @@ namespace OpenMod.Core.Plugins
                     //Remove Assembly from loading because required dependencies are missing.
                     providerAssemblies.Remove(providerAssembly);
 
+                    foreach (var loaderException in ex.LoaderExceptions)
+                    {
+                        m_Logger.LogDebug(loaderException,
+                            $"Exception occurred when getting types in plugin assembly: {providerAssembly.GetName().Name}");
+                    }
+
                     var missingAssemblies = CheckRequiredDependencies(ex.LoaderExceptions);
                     if (!TryInstallMissingDependencies)
                     {
