@@ -1,25 +1,40 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using OpenMod.UnityEngine.Transforms;
 using SDG.Unturned;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace OpenMod.Unturned.Building
 {
     public class UnturnedStructureBuildable : UnturnedBuildable
     {
-        public StructureData StructureData { get; }
+        public StructureData StructureData
+        {
+            get
+            {
+                return StructureDrop.GetServersideData();
+            }
+        }
 
         public StructureDrop StructureDrop { get; }
 
-        public UnturnedStructureBuildable(StructureData data, StructureDrop drop) : base(
-            new UnturnedBuildableAsset(data.structure.asset),
+        [Obsolete]
+        public UnturnedStructureBuildable(StructureData data, StructureDrop drop) : this(drop)
+        {
+            if (data != drop.GetServersideData())
+            {
+                throw new Exception("StructureData is not equal to the drop data");
+            }
+        }
+
+        public UnturnedStructureBuildable(StructureDrop drop) : base(
+            new UnturnedBuildableAsset(drop.GetServersideData().structure.asset),
             new UnityTransform(drop.model),
-            new UnturnedBuildableState(data.structure),
-            new UnturnedBuildableOwnership(data),
+            new UnturnedBuildableState(drop.GetServersideData().structure),
+            new UnturnedBuildableOwnership(drop.GetServersideData()),
             drop.instanceID.ToString())
         {
-            StructureData = data;
             StructureDrop = drop;
         }
 
@@ -29,10 +44,12 @@ namespace OpenMod.Unturned.Building
             {
                 await UniTask.SwitchToMainThread();
 
-                if (StructureManager.tryGetInfo(StructureDrop.model, out var x, out var y, out var index, out var region))
+                if (Regions.tryGetCoordinate(StructureDrop.GetServersideData().point, out var x, out var y))
                 {
-                    StructureManager.destroyStructure(region, x, y, index, Vector3.zero);
+                    return;
                 }
+
+                StructureManager.destroyStructure(StructureDrop, x, y, Vector3.zero);
             }
 
             return DestroyTask().AsTask();

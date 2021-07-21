@@ -20,10 +20,6 @@ namespace OpenMod.Core.Helpers
 
         public static void CopyAssemblyResources(Assembly assembly, string? baseDir, bool overwrite = false)
         {
-#if DEBUG
-            return;
-#endif
-
             baseDir ??= string.Empty;
 
             var resourceNames = assembly.GetManifestResourceNames();

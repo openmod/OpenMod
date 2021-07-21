@@ -1,11 +1,11 @@
-﻿using OpenMod.API.Ioc;
-using OpenMod.API.Prioritization;
-using OpenMod.Extensions.Games.Abstractions.Building;
-using SDG.Unturned;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
+using OpenMod.API.Ioc;
+using OpenMod.API.Prioritization;
+using OpenMod.Extensions.Games.Abstractions.Building;
+using SDG.Unturned;
 
 namespace OpenMod.Unturned.Building
 {
@@ -42,26 +42,21 @@ namespace OpenMod.Unturned.Building
 
                 var barricadeDatas = barricadeRegions.SelectMany(brd => brd.barricades).ToList();
                 var barricadeDrops = barricadeRegions.SelectMany(brd => brd.drops).ToList();
-                var structureDatas = structureRegions.SelectMany(str => str.structures).ToList();
+
                 var structureDrops = structureRegions.SelectMany(str => str.drops).ToList();
 
                 return barricadeDatas
                     .Select((k, i) =>
                     {
-                        var drop = barricadeDrops.ElementAt(i);
+                        var drop = barricadeDrops[i];
                         return drop == null ? null : new UnturnedBarricadeBuildable(k, drop);
                     })
                     .Cast<UnturnedBuildable>()
-                    .Concat(structureDatas.Select((k, i) =>
-                    {
-                        var drop = structureDrops.ElementAt(i);
-                        return drop == null ? null : new UnturnedStructureBuildable(k, drop);
-                    }))
-                    .Where(d => d != null)
+                    .Concat(structureDrops.Select(d => d == null ? null : new UnturnedStructureBuildable(d)))
                     .Select(d => d!)
                     .ToList();
             }
-            
+
             return GetBuildablesTask().AsTask();
         }
     }
